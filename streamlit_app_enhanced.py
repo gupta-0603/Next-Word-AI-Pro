@@ -381,7 +381,7 @@ elif page == " Generate Text":
             with st.spinner(" Generating text..."):
                 start = time.time()
                 try:
-                    generated = model.generate(input_text, num_words=num_words)
+                    generated = model.generate_text(input_text, num_words=num_words)
                     latency = (time.time() - start) * 1000
                     
                     add_to_history("Generate", input_text, generated)
