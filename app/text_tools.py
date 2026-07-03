@@ -15,13 +15,32 @@ the Keras model at all — they're classical NLP, not the LSTM's job.
 import logging
 
 from spellchecker import SpellChecker
-from nltk.corpus import wordnet
+from nltk.corpus import wordnet  
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer as SumyTokenizer
 from sumy.summarizers.text_rank import TextRankSummarizer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import nltk
 
 logger = logging.getLogger("next_word_ai")
+def _ensure_nltk_data():
+    """Downloads required NLTK corpora if they're not already present.
+    Safe to run every startup — skips anything already downloaded."""
+    resources = {
+        "corpora/wordnet": "wordnet",
+        "corpora/omw-1.4": "omw-1.4",
+        "tokenizers/punkt": "punkt",
+        "tokenizers/punkt_tab": "punkt_tab",
+    }
+    for path, package in resources.items():
+        try:
+            nltk.data.find(path)
+        except (LookupError, OSError):
+            logger.info("Downloading missing NLTK resource: %s", package)
+            nltk.download(package, quiet=True)
+
+_ensure_nltk_data()
+
 
 
 class TextTools:
