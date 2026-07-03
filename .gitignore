@@ -4,8 +4,3 @@ __pycache__/
 venv/
 .venv/
 *.log
-
-# Model files are large — host them separately (Git LFS, S3, Hugging Face Hub)
-# rather than committing to the repo. Remove this if you want to commit them.
-models/*.h5
-models/*.pkl
