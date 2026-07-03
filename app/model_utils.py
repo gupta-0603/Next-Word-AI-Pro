@@ -7,9 +7,16 @@ the API layer doesn't need to know anything about TensorFlow internals,
 and you can unit-test predictions without spinning up a server.
 """
 
+import os
+import warnings
 import pickle
 import logging
 from pathlib import Path
+
+# Suppress TensorFlow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning)
 
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -25,7 +32,18 @@ class NextWordModel:
 
     def __init__(self, model_path: Path, tokenizer_path: Path, max_len_path: Path):
         logger.info("Loading model from %s", model_path)
-        self.model = load_model(model_path)
+        try:
+            # Try loading with safe mode first
+            self.model = load_model(model_path, safe_mode=False)
+        except Exception as e:
+            logger.warning(f"Initial load failed: {e}. Trying with custom_objects...")
+            try:
+                from tensorflow.keras.layers import LSTM, Dense, Embedding
+                custom_objects = {'LSTM': LSTM, 'Dense': Dense, 'Embedding': Embedding}
+                self.model = load_model(model_path, custom_objects=custom_objects, safe_mode=False)
+            except Exception as e2:
+                logger.error(f"Failed to load model: {e2}")
+                raise
 
         with open(tokenizer_path, "rb") as f:
             self.tokenizer = pickle.load(f)

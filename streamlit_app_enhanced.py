@@ -3,6 +3,14 @@ Enhanced Streamlit app for Next Word AI
 With new features and improved UI
 """
 
+import os
+import warnings
+
+# Suppress TensorFlow warnings and info logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+
 import time
 import streamlit as st
 import pandas as pd
@@ -549,7 +557,7 @@ elif page == " Sentiment Analysis":
     
     if st.button(" Analyze", key="sentiment_btn", use_container_width=True):
         if text.strip():
-            with st.spinner("🔍 Analyzing..."):
+            with st.spinner(" Analyzing..."):
                 try:
                     result = text_tools.analyze_sentiment(text)
                     add_to_history("Sentiment", text, result)
