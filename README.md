@@ -55,7 +55,7 @@ python download_nltk_data.py   # one-time NLTK corpus download
 python run.py
 ```
 
-The app will be available at `https://next-word-ai-pro-03.streamlit.app/`.
+The app will be available at `http://localhost:8501`.
 
 ## API Access
 
